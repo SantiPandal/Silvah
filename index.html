@@ -108,8 +108,8 @@
             for (let i = 0; i < 5; i++) {
                 const firework = document.createElement('div');
                 firework.className = 'firework';
-                firework.style.left = `${Math.random() * 100}%`;
-                firework.style.top = `${Math.random() * 100}%`;
+                firework.style.left = \`\${Math.random() * 100}%\`;
+                firework.style.top = \`\${Math.random() * 100}%\`;
                 document.body.appendChild(firework);
                 setTimeout(() => {
                     firework.remove();
@@ -121,22 +121,23 @@
             e.preventDefault();
             const email = form.email.value;
             
-            fetch('/api/submit-email', {
+            fetch('https://formsubmit.co/ajax/management@silvahbrand.com', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email })
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(\`HTTP error! status: \${response.status}\`);
                 }
                 return response.json();
             })
             .then(data => {
                 console.log('Success:', data);
-                messageDiv.textContent = data.message || 'Email submitted successfully!';
+                messageDiv.textContent = 'Email submitted successfully!';
                 messageDiv.className = 'success-message';
                 messageDiv.style.display = 'block';
                 form.reset();
@@ -168,4 +169,3 @@
     </script>
 </body>
 </html>
-
