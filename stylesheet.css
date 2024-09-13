@@ -5,7 +5,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('components/images/Landing_page_background.png');
+    background-image: url('Landing_page_background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
