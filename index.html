@@ -80,6 +80,12 @@
 
         .success-message {
             animation: fadeIn 0.5s;
+            color: green;
+        }
+
+        .error-message {
+            animation: fadeIn 0.5s;
+            color: red;
         }
 
         @keyframes fadeIn {
@@ -116,8 +122,8 @@
                 for (let i = 0; i < 5; i++) {
                     const firework = document.createElement('div');
                     firework.className = 'firework';
-                    firework.style.left = \`\${Math.random() * 100}%\`;
-                    firework.style.top = \`\${Math.random() * 100}%\`;
+                    firework.style.left = `${Math.random() * 100}%`;
+                    firework.style.top = `${Math.random() * 100}%`;
                     document.body.appendChild(firework);
                     setTimeout(() => {
                         firework.remove();
@@ -129,6 +135,21 @@
                 e.preventDefault(); // Prevent default form submission
                 const formData = new FormData(form);
 
+                // Immediate feedback to the user
+                messageDiv.textContent = 'Email submitted successfully!';
+                messageDiv.className = 'success-message';
+                messageDiv.style.display = 'block';
+                form.reset();
+                createFireworks();
+
+                // Remove success message after 5 seconds
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.className = '';
+                    messageDiv.style.display = 'none';
+                }, 5000);
+
+                // Send the form data in the background
                 fetch('https://formsubmit.co/ajax/management@silvahbrand.com', {
                     method: 'POST',
                     body: formData,
@@ -138,33 +159,22 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success === 'true' || data.success === true) {
-                        // Success actions
-                        messageDiv.textContent = 'Email submitted successfully!';
-                        messageDiv.className = 'success-message';
-                        messageDiv.style.display = 'block';
-                        form.reset();
-                        createFireworks();
-
-                        // Remove success message after 5 seconds
-                        setTimeout(() => {
-                            messageDiv.textContent = '';
-                            messageDiv.className = '';
-                            messageDiv.style.display = 'none';
-                        }, 5000);
-                    } else {
+                    if (data.success !== 'true' && data.success !== true) {
                         throw new Error('Submission failed');
                     }
+                    // Optionally handle success response here
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                    // Display error message to the user
                     messageDiv.textContent = 'Error submitting email. Please try again.';
-                    messageDiv.style.color = 'red';
+                    messageDiv.className = 'error-message';
                     messageDiv.style.display = 'block';
 
                     // Hide error message after 5 seconds
                     setTimeout(() => {
                         messageDiv.textContent = '';
+                        messageDiv.className = '';
                         messageDiv.style.display = 'none';
                     }, 5000);
                 });
