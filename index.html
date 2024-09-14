@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
+    <!-- Font and CSS links -->
     <link href="https://fonts.googleapis.com/css2?family=Days+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="stylesheet.css">
     <style>
+        /* Your existing CSS styles */
         @keyframes firework {
             0% { transform: translate(var(--x), var(--initialY)); width: var(--initialSize); opacity: 1; }
             50% { width: 0.5vmin; opacity: 1; }
@@ -84,6 +86,8 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        /* Include any additional CSS from your stylesheet.css here if needed */
     </style>
 </head>
 <body>
@@ -92,7 +96,11 @@
         <div class="logo-container">
             <img src="Logo_desnudo_Blanco.png" alt="Logo" class="logo">
         </div>
-        <form id="email-form">
+        <form action="https://formsubmit.co/management@silvahbrand.com" method="POST" id="email-form">
+            <!-- Optional: Disable captcha if needed -->
+            <input type="hidden" name="_captcha" value="false">
+            <!-- Optional: Redirect after submission -->
+            <!-- <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> -->
             <input type="email" name="email" placeholder="Enter your email" required>
             <button type="submit">Submit</button>
         </form>
@@ -100,72 +108,68 @@
     </main>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('email-form');
-        const messageDiv = document.getElementById('message');
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('email-form');
+            const messageDiv = document.getElementById('message');
 
-        function createFireworks() {
-            for (let i = 0; i < 5; i++) {
-                const firework = document.createElement('div');
-                firework.className = 'firework';
-                firework.style.left = `${Math.random() * 100}%`;
-                firework.style.top = `${Math.random() * 100}%`;
-                document.body.appendChild(firework);
-                setTimeout(() => {
-                    firework.remove();
-                }, 2000);
-            }
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = form.email.value;
-            
-            fetch('https://formsubmit.co/ajax/management@silvahbrand.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            function createFireworks() {
+                for (let i = 0; i < 5; i++) {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = \`\${Math.random() * 100}%\`;
+                    firework.style.top = \`\${Math.random() * 100}%\`;
+                    document.body.appendChild(firework);
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 2000);
                 }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-                messageDiv.textContent = 'Email submitted successfully!';
-                messageDiv.className = 'success-message';
-                messageDiv.style.display = 'block';
-                form.reset();
+            }
 
-                createFireworks();
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+                const formData = new FormData(form);
 
-                // Remove success message and class after 5 seconds
-                setTimeout(() => {
-                    messageDiv.textContent = '';
-                    messageDiv.className = '';
-                    messageDiv.style.display = 'none';
-                }, 5000);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                messageDiv.textContent = 'Error submitting email. Please try again.';
-                messageDiv.style.color = 'red';
-                messageDiv.className = '';
-                messageDiv.style.display = 'block';
-                
-                // Hide error message after 5 seconds
-                setTimeout(() => {
-                    messageDiv.textContent = '';
-                    messageDiv.style.display = 'none';
-                }, 5000);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === 'true') {
+                        // Success actions
+                        messageDiv.textContent = 'Email submitted successfully!';
+                        messageDiv.className = 'success-message';
+                        messageDiv.style.display = 'block';
+                        form.reset();
+                        createFireworks();
+
+                        // Remove success message after 5 seconds
+                        setTimeout(() => {
+                            messageDiv.textContent = '';
+                            messageDiv.className = '';
+                            messageDiv.style.display = 'none';
+                        }, 5000);
+                    } else {
+                        throw new Error('Submission failed');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    messageDiv.textContent = 'Error submitting email. Please try again.';
+                    messageDiv.style.color = 'red';
+                    messageDiv.style.display = 'block';
+
+                    // Hide error message after 5 seconds
+                    setTimeout(() => {
+                        messageDiv.textContent = '';
+                        messageDiv.style.display = 'none';
+                    }, 5000);
+                });
             });
         });
-    });
     </script>
 </body>
 </html>
